@@ -1,0 +1,1982 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ôn Tập Vật Lý 12 - Thuyết Động Học Phân Tử & Định Luật Boyle</title>
+    <script>
+        window.MathJax = {
+            tex: {
+                inlineMath: [['$', '$'], ['\\(', '\\)']],
+                displayMath: [['$$', '$$'], ['\\[', '\\]']]
+            },
+            svg: { fontCache: 'global' }
+        };
+    </script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js"></script>
+    <style>
+        :root {
+            --bg-primary: #2d0d3e;
+            --bg-secondary: #461a5c;
+            --card-bg: #ffffff;
+            --text-dark: #1f2937;
+            --text-muted: #6b7280;
+            --opt-a: #2f6dae;
+            --opt-b: #2c9ca6;
+            --opt-c: #eca82c;
+            --opt-d: #d4546a;
+            --correct: #00c985;
+            --wrong: #ef3c69;
+            --accent: #8854c0;
+            --accent-hover: #7340aa;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, var(--bg-primary) 0%, var(--bg-secondary) 100%);
+            color: #ffffff;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 16px;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 960px;
+            margin: auto;
+        }
+
+        .header-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: rgba(0, 0, 0, 0.35);
+            padding: 12px 20px;
+            border-radius: 14px;
+            margin-bottom: 20px;
+            backdrop-filter: blur(8px);
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .brand {
+            font-weight: 800;
+            font-size: 1.25rem;
+            letter-spacing: 0.5px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .brand span {
+            background: #eca82c;
+            color: #2d0d3e;
+            padding: 2px 8px;
+            border-radius: 6px;
+            font-size: 0.85rem;
+        }
+
+        .stats-pill {
+            display: flex;
+            gap: 12px;
+            align-items: center;
+            font-weight: 700;
+            font-size: 0.95rem;
+        }
+
+        .pill {
+            background: rgba(255, 255, 255, 0.15);
+            padding: 6px 14px;
+            border-radius: 999px;
+        }
+
+        .pill.streak {
+            background: linear-gradient(90deg, #ff7b00, #ffb700);
+            color: #1f1200;
+        }
+
+        .screen {
+            display: none;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .screen.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(8px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Start Screen */
+        .hero-card {
+            background: var(--card-bg);
+            color: var(--text-dark);
+            border-radius: 20px;
+            padding: 32px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.35);
+            text-align: center;
+        }
+
+        .hero-card h1 {
+            font-size: 1.9rem;
+            color: #2d0d3e;
+            margin-bottom: 10px;
+        }
+
+        .hero-card p.subtitle {
+            color: var(--text-muted);
+            margin-bottom: 28px;
+            font-size: 1rem;
+        }
+
+        .topic-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+            gap: 16px;
+            margin-bottom: 24px;
+            text-align: left;
+        }
+
+        .topic-card {
+            border: 2px solid #e5e7eb;
+            border-radius: 16px;
+            padding: 20px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            position: relative;
+            background: #f9fafb;
+        }
+
+        .topic-card:hover {
+            border-color: var(--accent);
+            transform: translateY(-2px);
+        }
+
+        .topic-card.selected {
+            border-color: var(--accent);
+            background: #f3e8ff;
+            box-shadow: 0 4px 14px rgba(136, 84, 192, 0.2);
+        }
+
+        .topic-badge {
+            display: inline-block;
+            background: var(--accent);
+            color: #fff;
+            font-size: 0.78rem;
+            font-weight: 700;
+            padding: 4px 10px;
+            border-radius: 999px;
+            margin-bottom: 10px;
+        }
+
+        .topic-card h3 {
+            font-size: 1.1rem;
+            margin-bottom: 6px;
+            color: #111827;
+        }
+
+        .topic-card p {
+            font-size: 0.88rem;
+            color: #4b5563;
+            line-height: 1.4;
+        }
+
+        .options-bar {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            flex-wrap: wrap;
+            margin-bottom: 26px;
+            padding: 14px;
+            background: #f3f4f6;
+            border-radius: 12px;
+        }
+
+        .checkbox-label {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-weight: 600;
+            font-size: 0.95rem;
+            cursor: pointer;
+            user-select: none;
+        }
+
+        .checkbox-label input {
+            width: 18px;
+            height: 18px;
+            accent-color: var(--accent);
+        }
+
+        .btn-primary {
+            background: var(--correct);
+            color: #fff;
+            border: none;
+            padding: 15px 42px;
+            font-size: 1.15rem;
+            font-weight: 800;
+            border-radius: 14px;
+            cursor: pointer;
+            box-shadow: 0 6px 0 #009c66;
+            transition: all 0.15s ease;
+        }
+
+        .btn-primary:hover {
+            filter: brightness(1.05);
+            transform: translateY(-1px);
+        }
+
+        .btn-primary:active {
+            transform: translateY(4px);
+            box-shadow: 0 2px 0 #009c66;
+        }
+
+        /* Quiz Screen */
+        .progress-wrapper {
+            width: 100%;
+            height: 10px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 999px;
+            overflow: hidden;
+            margin-bottom: 18px;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: var(--correct);
+            width: 0%;
+            transition: width 0.35s ease;
+        }
+
+        .question-card {
+            background: var(--card-bg);
+            color: var(--text-dark);
+            border-radius: 20px;
+            padding: 28px;
+            box-shadow: 0 16px 36px rgba(0, 0, 0, 0.3);
+            margin-bottom: 18px;
+        }
+
+        .q-meta {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 14px;
+            font-size: 0.88rem;
+            font-weight: 700;
+            color: var(--accent);
+        }
+
+        .q-text {
+            font-size: 1.2rem;
+            font-weight: 700;
+            line-height: 1.55;
+            color: #111827;
+            margin-bottom: 16px;
+        }
+
+        .q-illustration {
+            display: flex;
+            justify-content: center;
+            margin: 14px 0 20px;
+            background: #f8fafc;
+            padding: 14px;
+            border-radius: 12px;
+            border: 1px solid #e2e8f0;
+        }
+
+        .answers-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 14px;
+        }
+
+        @media (max-width: 680px) {
+            .answers-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .ans-btn {
+            border: none;
+            border-radius: 14px;
+            padding: 18px 20px;
+            color: #ffffff;
+            font-size: 1.02rem;
+            font-weight: 600;
+            text-align: left;
+            cursor: pointer;
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+            transition: transform 0.15s ease, opacity 0.2s ease, filter 0.2s ease;
+            line-height: 1.45;
+            min-height: 72px;
+        }
+
+        .ans-btn:hover:not(:disabled) {
+            transform: translateY(-2px);
+            filter: brightness(1.07);
+        }
+
+        .ans-btn.color-0 { background: var(--opt-a); box-shadow: 0 5px 0 #1e4b7a; }
+        .ans-btn.color-1 { background: var(--opt-b); box-shadow: 0 5px 0 #1d6b72; }
+        .ans-btn.color-2 { background: var(--opt-c); box-shadow: 0 5px 0 #b57c16; }
+        .ans-btn.color-3 { background: var(--opt-d); box-shadow: 0 5px 0 #9e3547; }
+
+        .ans-letter {
+            background: rgba(0, 0, 0, 0.25);
+            width: 30px;
+            height: 30px;
+            border-radius: 8px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 800;
+            flex-shrink: 0;
+        }
+
+        .ans-btn:disabled {
+            cursor: default;
+        }
+
+        .ans-btn.dimmed {
+            opacity: 0.38;
+        }
+
+        .ans-btn.is-correct {
+            background: var(--correct) !important;
+            box-shadow: 0 5px 0 #008f5d !important;
+            opacity: 1 !important;
+            transform: scale(1.01);
+        }
+
+        .ans-btn.is-wrong {
+            background: var(--wrong) !important;
+            box-shadow: 0 5px 0 #a81d40 !important;
+            opacity: 1 !important;
+        }
+
+        .feedback-box {
+            margin-top: 20px;
+            padding: 16px 20px;
+            border-radius: 14px;
+            display: none;
+            line-height: 1.55;
+            font-size: 0.96rem;
+        }
+
+        .feedback-box.correct {
+            display: block;
+            background: #ecfdf5;
+            border-left: 5px solid var(--correct);
+            color: #065f46;
+        }
+
+        .feedback-box.wrong {
+            display: block;
+            background: #fef2f2;
+            border-left: 5px solid var(--wrong);
+            color: #991b1b;
+        }
+
+        .quiz-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+
+        .btn-nav {
+            background: rgba(255, 255, 255, 0.18);
+            color: #fff;
+            border: 1px solid rgba(255, 255, 255, 0.28);
+            padding: 12px 22px;
+            border-radius: 12px;
+            font-weight: 700;
+            cursor: pointer;
+            font-size: 0.95rem;
+            transition: background 0.2s;
+        }
+
+        .btn-nav:hover {
+            background: rgba(255, 255, 255, 0.28);
+        }
+
+        .btn-next {
+            background: #eca82c;
+            color: #2d0d3e;
+            border: none;
+            padding: 13px 30px;
+            border-radius: 12px;
+            font-weight: 800;
+            font-size: 1rem;
+            cursor: pointer;
+            box-shadow: 0 4px 0 #b87d14;
+        }
+
+        /* Result Screen */
+        .result-card {
+            background: var(--card-bg);
+            color: var(--text-dark);
+            border-radius: 20px;
+            padding: 32px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.35);
+        }
+
+        .result-header {
+            text-align: center;
+            margin-bottom: 26px;
+        }
+
+        .score-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 14px;
+            margin: 20px 0 26px;
+        }
+
+        .score-box {
+            background: #f3f4f6;
+            padding: 16px;
+            border-radius: 14px;
+            text-align: center;
+        }
+
+        .score-box .val {
+            font-size: 1.7rem;
+            font-weight: 800;
+            color: var(--accent);
+        }
+
+        .score-box .lbl {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            font-weight: 600;
+        }
+
+        .result-actions {
+            display: flex;
+            justify-content: center;
+            gap: 14px;
+            flex-wrap: wrap;
+            margin-bottom: 28px;
+        }
+
+        .review-list {
+            display: flex;
+            flex-direction: column;
+            gap: 14px;
+            max-height: 520px;
+            overflow-y: auto;
+            padding-right: 6px;
+        }
+
+        .review-item {
+            border: 1px solid #e5e7eb;
+            border-radius: 12px;
+            padding: 16px;
+            background: #f9fafb;
+        }
+
+        .review-item.ok { border-left: 5px solid var(--correct); }
+        .review-item.bad { border-left: 5px solid var(--wrong); }
+
+        .review-q {
+            font-weight: 700;
+            margin-bottom: 8px;
+            color: #111827;
+        }
+
+        .review-ans {
+            font-size: 0.92rem;
+            margin-bottom: 4px;
+        }
+
+        .review-exp {
+            font-size: 0.88rem;
+            color: #374151;
+            background: #eef2ff;
+            padding: 8px 12px;
+            border-radius: 8px;
+            margin-top: 8px;
+        }
+
+        .q-palette {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+            margin-bottom: 16px;
+            background: rgba(0,0,0,0.25);
+            padding: 10px;
+            border-radius: 12px;
+        }
+
+        .pal-btn {
+            width: 32px;
+            height: 32px;
+            border-radius: 8px;
+            border: none;
+            font-weight: 700;
+            font-size: 0.8rem;
+            cursor: pointer;
+            background: rgba(255,255,255,0.2);
+            color: #fff;
+        }
+
+        .pal-btn.current { outline: 2px solid #eca82c; background: rgba(255,255,255,0.4); }
+        .pal-btn.done-ok { background: var(--correct); color: #fff; }
+        .pal-btn.done-bad { background: var(--wrong); color: #fff; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div class="header-bar">
+        <div class="brand">⚡ QUIZIZZ VẬT LÝ <span>70 CÂU</span></div>
+        <div class="stats-pill" id="liveStats" style="display: none;">
+            <div class="pill">Câu: <span id="statProgress">1/38</span></div>
+            <div class="pill">Điểm: <span id="statScore">0</span></div>
+            <div class="pill streak">🔥 Chuỗi: <span id="statStreak">0</span></div>
+        </div>
+    </div>
+
+    <!-- START SCREEN -->
+    <div id="startScreen" class="screen active">
+        <div class="hero-card">
+            <h1>Ôn Tập Vật Lý - Chất Khí</h1>
+            <p class="subtitle">Hệ thống trắc nghiệm tương tác tổng hợp đầy đủ từ bộ đề Thuyết động học phân tử chất khí & Định luật Boyle</p>
+
+            <div class="topic-grid">
+                <div class="topic-card selected" data-mode="topic1" onclick="selectMode('topic1', this)">
+                    <span class="topic-badge">38 Câu Hỏi</span>
+                    <h3>Chuyên đề 1: Thuyết động học phân tử chất khí</h3>
+                    <p>Cấu tạo chất, chuyển động Brown, khí lí tưởng, áp suất chất khí, số Avogadro và lực tương tác phân tử.</p>
+                </div>
+
+                <div class="topic-card" data-mode="topic2" onclick="selectMode('topic2', this)">
+                    <span class="topic-badge">32 Câu Hỏi</span>
+                    <h3>Chuyên đề 2: Định luật Boyle</h3>
+                    <p>Quá trình đẳng nhiệt, đường đẳng nhiệt trong các hệ tọa độ, thang nhiệt độ Kelvin & bài tập tính toán.</p>
+                </div>
+
+                <div class="topic-card" data-mode="all" onclick="selectMode('all', this)">
+                    <span class="topic-badge">70 Câu Hỏi</span>
+                    <h3>Tổng hợp cả 2 chuyên đề</h3>
+                    <p>Luyện tập toàn bộ 70 câu hỏi từ cả hai phần để kiểm tra kiến thức tổng hợp.</p>
+                </div>
+            </div>
+
+            <div class="options-bar">
+                <label class="checkbox-label">
+                    <input type="checkbox" id="optShuffleQ"> Xáo trộn thứ tự câu hỏi
+                </label>
+                <label class="checkbox-label">
+                    <input type="checkbox" id="optShuffleA"> Xáo trộn thứ tự đáp án
+                </label>
+                <label class="checkbox-label">
+                    <input type="checkbox" id="optShowExp" checked> Hiện hướng dẫn giải ngay khi chọn
+                </label>
+            </div>
+
+            <button class="btn-primary" onclick="startQuiz()">BẮT ĐẦU LÀM BÀI ▶</button>
+        </div>
+    </div>
+
+    <!-- QUIZ SCREEN -->
+    <div id="quizScreen" class="screen">
+        <div class="progress-wrapper">
+            <div class="progress-fill" id="progressBar"></div>
+        </div>
+
+        <div class="q-palette" id="qPalette"></div>
+
+        <div class="question-card">
+            <div class="q-meta">
+                <span id="qTopicTag">Chuyên đề</span>
+                <span id="qNumberTag">Câu 1 / 38</span>
+            </div>
+            <div class="q-text" id="qText">Nội dung câu hỏi</div>
+            <div id="qIllustration" class="q-illustration" style="display: none;"></div>
+            <div class="answers-grid" id="answersGrid"></div>
+            <div class="feedback-box" id="feedbackBox"></div>
+        </div>
+
+        <div class="quiz-footer">
+            <div style="display: flex; gap: 10px;">
+                <button class="btn-nav" onclick="quitToHome()">🏠 Trang chủ</button>
+                <button class="btn-nav" id="btnPrev" onclick="prevQuestion()">⬅ Câu trước</button>
+            </div>
+            <div style="display: flex; gap: 10px;">
+                <button class="btn-nav" onclick="finishQuiz()">Nộp bài & Xem kết quả</button>
+                <button class="btn-next" id="btnNext" onclick="nextQuestion()">Câu tiếp theo ➡</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- RESULT SCREEN -->
+    <div id="resultScreen" class="screen">
+        <div class="result-card">
+            <div class="result-header">
+                <h1 style="color: #2d0d3e; margin-bottom: 6px;">🎉 Hoàn Thành Bài Luyện Tập!</h1>
+                <p style="color: var(--text-muted);" id="resultSubtitle">Kết quả chi tiết của bạn</p>
+            </div>
+
+            <div class="score-grid">
+                <div class="score-box">
+                    <div class="val" id="resScore">0</div>
+                    <div class="lbl">Tổng điểm</div>
+                </div>
+                <div class="score-box">
+                    <div class="val" id="resCorrect" style="color: var(--correct);">0/0</div>
+                    <div class="lbl">Số câu đúng</div>
+                </div>
+                <div class="score-box">
+                    <div class="val" id="resAccuracy">0%</div>
+                    <div class="lbl">Độ chính xác</div>
+                </div>
+                <div class="score-box">
+                    <div class="val" id="resStreak" style="color: #d97706;">0</div>
+                    <div class="lbl">Chuỗi đúng dài nhất</div>
+                </div>
+            </div>
+
+            <div class="result-actions">
+                <button class="btn-primary" onclick="startQuiz()">🔄 Làm lại bộ đề này</button>
+                <button class="btn-next" id="btnRetryWrong" onclick="retryWrongOnly()" style="display: none;">⚠️ Làm lại các câu sai (<span id="wrongCount">0</span>)</button>
+                <button class="btn-nav" style="background: #4b5563;" onclick="quitToHome()">📚 Chọn chuyên đề khác</button>
+            </div>
+
+            <h3 style="margin-bottom: 14px; color: #111827;">Chi tiết từng câu hỏi & Lời giải:</h3>
+            <div class="review-list" id="reviewList"></div>
+        </div>
+    </div>
+</div>
+
+<script>
+const SVG_DENSITY_4_BOXES = `
+<svg width="460" height="115" viewBox="0 0 460 115" xmlns="http://www.w3.org/2000/svg">
+  <!-- Hinh 1 -->
+  <g transform="translate(10, 10)">
+    <rect x="0" y="0" width="95" height="75" fill="#fff" stroke="#111" stroke-width="2"/>
+    <circle cx="18" cy="16" r="3" fill="#111"/><circle cx="48" cy="18" r="3" fill="#111"/><circle cx="80" cy="14" r="3" fill="#111"/>
+    <circle cx="32" cy="36" r="3" fill="#111"/><circle cx="64" cy="35" r="3" fill="#111"/><circle cx="14" cy="52" r="3" fill="#111"/>
+    <circle cx="45" cy="56" r="3" fill="#111"/><circle cx="78" cy="54" r="3" fill="#111"/><circle cx="24" cy="66" r="3" fill="#111"/>
+    <circle cx="62" cy="67" r="3" fill="#111"/><circle cx="85" cy="34" r="3" fill="#111"/><circle cx="52" cy="42" r="3" fill="#111"/>
+    <text x="47" y="95" font-size="13" font-weight="bold" text-anchor="middle" fill="#111">Hình 1</text>
+  </g>
+  <!-- Hinh 2 -->
+  <g transform="translate(125, 10)">
+    <rect x="0" y="0" width="95" height="75" fill="#fff" stroke="#111" stroke-width="2"/>
+    <circle cx="22" cy="15" r="3" fill="#111"/><circle cx="65" cy="18" r="3" fill="#111"/><circle cx="42" cy="32" r="3" fill="#111"/>
+    <circle cx="20" cy="48" r="3" fill="#111"/><circle cx="35" cy="52" r="3" fill="#111"/><circle cx="55" cy="48" r="3" fill="#111"/>
+    <circle cx="72" cy="52" r="3" fill="#111"/><circle cx="15" cy="64" r="3" fill="#111"/><circle cx="30" cy="66" r="3" fill="#111"/>
+    <circle cx="48" cy="65" r="3" fill="#111"/><circle cx="66" cy="67" r="3" fill="#111"/><circle cx="82" cy="63" r="3" fill="#111"/>
+    <circle cx="40" cy="59" r="3" fill="#111"/><circle cx="60" cy="58" r="3" fill="#111"/>
+    <text x="47" y="95" font-size="13" font-weight="bold" text-anchor="middle" fill="#111">Hình 2</text>
+  </g>
+  <!-- Hinh 3 -->
+  <g transform="translate(240, 10)">
+    <rect x="0" y="0" width="95" height="75" fill="#fff" stroke="#111" stroke-width="2"/>
+    <circle cx="45" cy="24" r="3" fill="#111"/><circle cx="54" cy="26" r="3" fill="#111"/><circle cx="38" cy="32" r="3" fill="#111"/>
+    <circle cx="48" cy="34" r="3" fill="#111"/><circle cx="58" cy="35" r="3" fill="#111"/><circle cx="42" cy="42" r="3" fill="#111"/>
+    <circle cx="51" cy="43" r="3" fill="#111"/><circle cx="60" cy="44" r="3" fill="#111"/><circle cx="36" cy="48" r="3" fill="#111"/>
+    <circle cx="46" cy="51" r="3" fill="#111"/><circle cx="55" cy="52" r="3" fill="#111"/>
+    <text x="47" y="95" font-size="13" font-weight="bold" text-anchor="middle" fill="#111">Hình 3</text>
+  </g>
+  <!-- Hinh 4 -->
+  <g transform="translate(355, 10)">
+    <rect x="0" y="0" width="95" height="75" fill="#fff" stroke="#111" stroke-width="2"/>
+    <circle cx="12" cy="52" r="3" fill="#111"/><circle cx="28" cy="50" r="3" fill="#111"/><circle cx="45" cy="53" r="3" fill="#111"/>
+    <circle cx="62" cy="51" r="3" fill="#111"/><circle cx="80" cy="52" r="3" fill="#111"/><circle cx="18" cy="60" r="3" fill="#111"/>
+    <circle cx="36" cy="61" r="3" fill="#111"/><circle cx="54" cy="59" r="3" fill="#111"/><circle cx="72" cy="61" r="3" fill="#111"/>
+    <circle cx="12" cy="68" r="3" fill="#111"/><circle cx="28" cy="69" r="3" fill="#111"/><circle cx="46" cy="68" r="3" fill="#111"/>
+    <circle cx="64" cy="69" r="3" fill="#111"/><circle cx="82" cy="68" r="3" fill="#111"/>
+    <text x="47" y="95" font-size="13" font-weight="bold" text-anchor="middle" fill="#111">Hình 4</text>
+  </g>
+</svg>`;
+
+const SVG_ISOTHERMS_T1_T2 = `
+<svg width="260" height="200" viewBox="0 0 260 200" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="7" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M 0 1 L 10 5 L 0 9 z" fill="#111"/>
+    </marker>
+  </defs>
+  <!-- Axes -->
+  <line x1="35" y1="170" x2="35" y2="18" stroke="#111" stroke-width="2" marker-end="url(#arrow)"/>
+  <line x1="35" y1="170" x2="235" y2="170" stroke="#111" stroke-width="2" marker-end="url(#arrow)"/>
+  <text x="20" y="25" font-size="15" font-style="italic" font-weight="bold" fill="#111">p</text>
+  <text x="230" y="188" font-size="15" font-style="italic" font-weight="bold" fill="#111">V</text>
+  <text x="20" y="185" font-size="14" font-weight="bold" fill="#111">O</text>
+  <!-- Curve T1 (lower) -->
+  <path d="M 52 38 Q 62 145 215 156" fill="none" stroke="#d97706" stroke-width="2.5"/>
+  <text x="112" y="142" font-size="14" font-weight="bold" fill="#b45309">T₁</text>
+  <!-- Curve T2 (higher) -->
+  <path d="M 78 28 Q 92 122 222 132" fill="none" stroke="#111827" stroke-width="2.5"/>
+  <text x="115" y="72" font-size="14" font-weight="bold" fill="#111827">T₂</text>
+</svg>`;
+
+const QUESTIONS_DB = [
+  // ================= CHUYÊN ĐỀ 1: THUYẾT ĐỘNG HỌC PHÂN TỬ CHẤT KHÍ (38 CÂU) =================
+  {
+    id: "1.1",
+    topic: "topic1",
+    topicName: "Thuyết động học phân tử chất khí",
+    question: "Nhiệt độ của vật không phụ thuộc vào yếu tố nào sau đây?",
+    options: [
+      "Vận tốc của các phân tử cấu tạo nên vật.",
+      "Khoảng cách giữa các phân tử cấu tạo nên vật.",
+      "Khối lượng của từng phân tử cấu tạo nên vật.",
+      "Khối lượng của vật."
+    ],
+    correct: 3,
+    explanation: "Nhiệt độ của vật phụ thuộc vào vận tốc của các phân tử cấu tạo nên vật, khối lượng của từng phân tử cấu tạo nên vật, khoảng cách giữa các phân tử cấu tạo nên vật; không phụ thuộc vào khối lượng của vật."
+  },
+  {
+    id: "1.2",
+    topic: "topic1",
+    topicName: "Thuyết động học phân tử chất khí",
+    question: "Áp suất của khí lên thành bình là",
+    options: [
+      "lực tác dụng vuông góc lên toàn bộ diện tích thành bình.",
+      "lực tác dụng lên thành bình.",
+      "lực tác dụng vuông góc lên một đơn vị diện tích thành bình.",
+      "lực tác dụng lên một đơn vị diện tích thành bình."
+    ],
+    correct: 2,
+    explanation: "Áp suất của chất khí tác dụng lên thành bình được đo bằng độ lớn của lực tác dụng vuông góc lên một đơn vị diện tích thành bình."
+  },
+  {
+    id: "1.3",
+    topic: "topic1",
+    topicName: "Thuyết động học phân tử chất khí",
+    question: "Khi dùng pit-tông nén khí trong một xi lanh kín thì",
+    options: [
+      "kích thước mỗi phân tử khí giảm.",
+      "số phân tử khí giảm.",
+      "khoảng cách giữa các phân tử khí giảm.",
+      "khối lượng mỗi phân tử giảm."
+    ],
+    correct: 2,
+    explanation: "Khi nén khí trong xi lanh kín, thể tích khối khí giảm nên khoảng cách giữa các phân tử khí giảm, còn kích thước, khối lượng và số lượng phân tử khí không đổi."
+  },
+  {
+    id: "1.4",
+    topic: "topic1",
+    topicName: "Thuyết động học phân tử chất khí",
+    question: "Các vật rắn giữ được hình dạng và thể tích của chúng là do loại lực nào sau đây?",
+    options: [
+      "Lực hạt nhân.",
+      "Lực ma sát.",
+      "Lực tương tác phân tử.",
+      "Lực hấp dẫn."
+    ],
+    correct: 2,
+    explanation: "Các vật rắn giữ được hình dạng và thể tích của chúng là do lực tương tác phân tử (lực tương tác giữa các phân tử ở thể rắn rất lớn)."
+  },
+  {
+    id: "1.5",
+    topic: "topic1",
+    topicName: "Thuyết động học phân tử chất khí",
+    question: "Các phân tử khí lí tưởng có các tính chất nào sau đây?",
+    options: [
+      "Như chất điểm, và chuyển động không ngừng.",
+      "Như chất điểm, tương tác hút hoặc đẩy với nhau.",
+      "Chuyển động không ngừng, tương tác hút hoặc đẩy với nhau.",
+      "Như chất điểm, chuyển động không ngừng, tương tác hút hoặc đẩy với nhau."
+    ],
+    correct: 0,
+    explanation: "Trong mô hình khí lí tưởng, các phân tử khí được coi như chất điểm, chuyển động hỗn loạn không ngừng và bỏ qua tương tác hút/đẩy từ xa (chỉ tương tác khi va chạm)."
+  },
+  {
+    id: "1.6",
+    topic: "topic1",
+    topicName: "Thuyết động học phân tử chất khí",
+    question: "Trong điều kiện chuẩn về nhiệt độ và áp suất thì",
+    options: [
+      "khoảng cách giữa các phân tử rất nhỏ so với kích thước của các phân tử.",
+      "các phân tử của các chất khí khác nhau chuyển động với vận tốc như nhau.",
+      "số phân tử trong một đơn vị thể tích của các chất khí khác nhau là như nhau.",
+      "các phân tử khí khác nhau va chạm vào thành bình tác dụng vào thành bình những lực bằng nhau."
+    ],
+    correct: 2,
+    explanation: "Trong điều kiện chuẩn về nhiệt độ và áp suất (áp suất $1\text{ atm}$, nhiệt độ $273\text{ K}$, thể tích $22,4\text{ lít}$) thì số phân tử trong một đơn vị thể tích của các chất khí khác nhau là như nhau."
+  },
+  {
+    id: "1.7",
+    topic: "topic1",
+    topicName: "Thuyết động học phân tử chất khí",
+    question: "Câu nào không phù hợp với khí lí tưởng?",
+    options: [
+      "Các phân tử khí chuyển động càng nhanh khi nhiệt độ càng cao.",
+      "Khối lượng của các phân tử khí có thể bỏ qua.",
+      "Thể tích các phân tử có thể bỏ qua.",
+      "Các phân tử chỉ tương tác với nhau khi va chạm."
+    ],
+    correct: 1,
+    explanation: "Khí lí tưởng có các phân tử được coi là chất điểm (bỏ qua thể tích riêng), chỉ tương tác với nhau khi va chạm. Không thể bỏ qua khối lượng của các phân tử khí."
+  },
+  {
+    id: "1.8",
+    topic: "topic1",
+    topicName: "Thuyết động học phân tử chất khí",
+    question: "Áp suất của chất khí tác dụng lên thành bình chứa không phụ thuộc vào",
+    options: [
+      "mật độ phân tử.",
+      "nhiệt độ của khí.",
+      "vị trí của phân tử.",
+      "khối lượng phân tử."
+    ],
+    correct: 2,
+    explanation: "Áp suất khí phụ thuộc vào nhiệt độ của khí, mật độ phân tử và khối lượng phân tử; không phụ thuộc vào vị trí của phân tử."
+  },
+  {
+    id: "1.9",
+    topic: "topic1",
+    topicName: "Thuyết động học phân tử chất khí",
+    question: "Thông tin nào sau đây là không đúng khi nói về khối lượng mol và thể tích mol của một chất?",
+    options: [
+      "Khối lượng mol của một chất được đo bằng khối lượng của một mol chất ấy.",
+      "Ở điều kiện tiêu chuẩn ($0^\circ\text{C}$ và $1\text{ atm}$) thể tích mol của các chất khí khác nhau thì khác nhau.",
+      "Ở điều kiện tiêu chuẩn ($0^\circ\text{C}$ và $1\text{ atm}$) thể tích mol của mọi chất khí đều bằng $22,4\text{ lít}$.",
+      "Thể tích mol của một chất được đo bằng thể tích của một mol chất ấy."
+    ],
+    correct: 1,
+    explanation: "Ở điều kiện tiêu chuẩn ($0^\circ\text{C}$ và $1\text{ atm}$), thể tích mol của mọi chất khí đều bằng $22,4\text{ lít}$."
+  },
+  {
+    id: "1.10",
+    topic: "topic1",
+    topicName: "Thuyết động học phân tử chất khí",
+    question: "Khi khoảng cách giữa các phân tử rất nhỏ, thì giữa các phân tử",
+    options: [
+      "chỉ có lực hút.",
+      "có cả lực hút và lực đẩy, nhưng lực đẩy lớn hơn lực hút.",
+      "có cả lực hút và lực đẩy, nhưng lực đẩy nhỏ hơn lực hút.",
+      "chỉ có lực đẩy."
+    ],
+    correct: 1,
+    explanation: "Khi khoảng cách giữa các phân tử rất nhỏ, thì giữa các phân tử có cả lực hút và lực đẩy, nhưng lực đẩy lớn hơn lực hút."
+  },
+  {
+    id: "1.11",
+    topic: "topic1",
+    topicName: "Thuyết động học phân tử chất khí",
+    question: "Chọn câu sai. Số Avogadro có giá trị bằng số nguyên tử chứa trong",
+    options: [
+      "số phân tử chứa trong $16\text{ gam}$ khí oxygen.",
+      "số phân tử chứa trong $18\text{ gam}$ nước lỏng.",
+      "số nguyên tử chứa trong $4\text{ gam}$ khí helium.",
+      "số nguyên tử chứa trong $22,4\text{ lít}$ khí trơ ở nhiệt độ $0^\circ\text{C}$ và áp suất $1\text{ atm}$."
+    ],
+    correct: 0,
+    explanation: "Số Avogadro là số hạt có trong $1\text{ mol}$ chất. Trong $1\text{ mol}$ khí oxygen ($\text{O}_2$) có $32\text{ gam}$ chất, nên $16\text{ gam}$ khí oxygen chỉ ứng với $0,5\text{ mol}$."
+  },
+  {
+    id: "1.12",
+    topic: "topic1",
+    topicName: "Thuyết động học phân tử chất khí",
+    question: "Phát biểu nào sau đây là sai khi nói về chuyển động của phân tử?",
+    options: [
+      "Chuyển động của phân tử là do lực tương tác phân tử gây ra.",
+      "Các phân tử khí lí tưởng chuyển động theo đường thẳng giữa hai vật va chạm.",
+      "Các phân tử chuyển động càng nhanh thì nhiệt độ của vật càng cao.",
+      "Các phân tử chuyển động không ngừng."
+    ],
+    correct: 0,
+    explanation: "Chuyển động của phân tử là chuyển động nhiệt, không phải do lực tương tác phân tử gây ra."
+  },
+  {
+    id: "1.13",
+    topic: "topic1",
+    topicName: "Thuyết động học phân tử chất khí",
+    question: "Câu nào sau đây nói về khí lí tưởng là không đúng?",
+    options: [
+      "Khí lí tưởng là khí mà khối lượng của các phân tử có thể bỏ qua.",
+      "Khí lí tưởng là khí mà thể tích của các phân tử có thể bỏ qua.",
+      "Khí lí tưởng là khí có thể gây áp suất lên thành bình chứa.",
+      "Khí lí tưởng là khí mà các phân tử chỉ tương tác khi va chạm."
+    ],
+    correct: 0,
+    explanation: "Khí lí tưởng là khí mà các phân tử được xem như các chất điểm (bỏ qua thể tích), chúng chỉ tương tác với nhau khi va chạm. Khi các phân tử chuyển động va chạm lên thành bình tạo áp suất lên thành bình chứa nên khối lượng của các phân tử có thể bỏ qua là không đúng."
+  },
+  {
+    id: "1.14",
+    topic: "topic1",
+    topicName: "Thuyết động học phân tử chất khí",
+    question: "Trong thí nghiệm của Brown các hạt phấn hoa chuyển động hỗn độn không ngừng vì",
+    options: [
+      "chúng là các phân tử.",
+      "các phân tử nước chuyển động không ngừng, va chạm vào chúng từ mọi phía.",
+      "chúng là các thực thể sống.",
+      "giữa chúng có khoảng cách."
+    ],
+    correct: 1,
+    explanation: "Trong thí nghiệm của Brown các hạt phấn hoa chuyển động hỗn độn không ngừng vì các phân tử nước chuyển động không ngừng, va chạm vào chúng từ mọi phía."
+  },
+  {
+    id: "1.15",
+    topic: "topic1",
+    topicName: "Thuyết động học phân tử chất khí",
+    question: "Điều nào sau đây là sai khi nói về cấu tạo chất?",
+    options: [
+      "Các nguyên tử hay phân tử chuyển động càng nhanh thì nhiệt độ của vật càng thấp.",
+      "Các chất được cấu tạo từ các nguyên tử, phân tử.",
+      "Các nguyên tử, phân tử đồng thời hút nhau và đẩy nhau.",
+      "Các nguyên tử, phân tử chuyển động hỗn loạn không ngừng."
+    ],
+    correct: 0,
+    explanation: "Theo thuyết động học phân tử, các nguyên tử hay phân tử chuyển động càng nhanh thì nhiệt độ của vật càng cao."
+  },
+  {
+    id: "1.16",
+    topic: "topic1",
+    topicName: "Thuyết động học phân tử chất khí",
+    question: "Hình biểu diễn đúng sự phân bố mật độ của phân tử khí trong một bình kín là",
+    illustration: SVG_DENSITY_4_BOXES,
+    options: [
+      "hình 2.",
+      "hình 3.",
+      "hình 1.",
+      "hình 4."
+    ],
+    correct: 2,
+    explanation: "Các phân tử khí chuyển động hỗn loạn không ngừng và phân bố đều, choán hết toàn bộ không gian bình chứa (Hình 1)."
+  },
+  {
+    id: "1.17",
+    topic: "topic1",
+    topicName: "Thuyết động học phân tử chất khí",
+    question: "Tính chất nào sau đây không phải là tính chất của chất khí?",
+    options: [
+      "Các phân tử chuyển động hỗn loạn và không ngừng.",
+      "Chất khí dễ nén hơn chất lỏng và chất rắn.",
+      "Các phân tử chuyển động hỗn loạn xung quanh các vị trí cân bằng cố định.",
+      "Chất khí có tính bành trướng, luôn chiếm toàn bộ thể tích bình chứa."
+    ],
+    correct: 2,
+    explanation: "Tính chất các phân tử chuyển động hỗn loạn xung quanh các vị trí cân bằng cố định là của chất rắn."
+  },
+  {
+    id: "1.18",
+    topic: "topic1",
+    topicName: "Thuyết động học phân tử chất khí",
+    question: "Phát biểu nào sau đây là sai khi nói về cấu tạo chất?",
+    options: [
+      "Các nguyên tử, phân tử đứng sát nhau và giữa chúng không có khoảng cách.",
+      "Lực tương tác giữa các phân tử ở thể rắn lớn hơn lực tương tác giữa các phân tử ở thể lỏng và thể khí.",
+      "Các chất được cấu tạo từ các hạt riêng gọi là nguyên tử, phân tử.",
+      "Các nguyên tử, phân tử chất lỏng dao động xung quanh các vị trí cân bằng không cố định."
+    ],
+    correct: 0,
+    explanation: "Các chất được cấu tạo từ các hạt riêng biệt gọi là nguyên tử, phân tử và giữa chúng luôn có khoảng cách."
+  },
+  {
+    id: "1.19",
+    topic: "topic1",
+    topicName: "Thuyết động học phân tử chất khí",
+    question: "Khi nhiệt độ của một cái ấm bằng nhôm tăng lên thì",
+    options: [
+      "các nguyên tử nhôm chuyển động nhanh lên.",
+      "trọng lượng của ấm tăng.",
+      "trọng lượng riêng của ấm tăng.",
+      "khối lượng của ấm tăng."
+    ],
+    correct: 0,
+    explanation: "Khi nhiệt độ của một cái ấm bằng nhôm tăng lên thì các nguyên tử nhôm chuyển động nhanh lên."
+  },
+  {
+    id: "1.20",
+    topic: "topic1",
+    topicName: "Thuyết động học phân tử chất khí",
+    question: "Các phân tử khí ở áp suất thấp và nhiệt độ tiêu chuẩn có các tính chất là",
+    options: [
+      "chuyển động không ngừng và tương tác hút hoặc đẩy với nhau.",
+      "chuyển động không ngừng và coi như chất điểm.",
+      "coi như chất điểm và tương tác hút hoặc đẩy với nhau.",
+      "Chuyển động không ngừng, coi như chất điểm, và tương tác hút hoặc đẩy với nhau."
+    ],
+    correct: 1,
+    explanation: "Vì ở áp suất thấp, ta có thể coi khí thực gần đúng là khí lý tưởng nên chúng chỉ tương tác với nhau khi va chạm (chuyển động không ngừng và coi như chất điểm)."
+  },
+  {
+    id: "1.21",
+    topic: "topic1",
+    topicName: "Thuyết động học phân tử chất khí",
+    question: "Phát biểu nào sau đây nói đúng về cấu tạo của chất?",
+    options: [
+      "Chất là một khối liền với nhau.",
+      "Chất được cấu tạo từ các hạt xếp chặt vào nhau.",
+      "Chất được cấu tạo từ các hạt riêng biệt đứng yên và nối liền với nhau.",
+      "Chất được cấu tạo từ các hạt riêng biệt gọi là nguyên tử, phân tử."
+    ],
+    correct: 3,
+    explanation: "Các chất được cấu tạo từ các hạt riêng biệt gọi là nguyên tử, phân tử."
+  },
+  {
+    id: "1.22",
+    topic: "topic1",
+    topicName: "Thuyết động học phân tử chất khí",
+    question: "Trong thí nghiệm Brown các hạt phấn hoa chuyển động hỗn độn không ngừng vì",
+    options: [
+      "giữa chúng có khoảng cách.",
+      "chúng là các phân tử.",
+      "chúng là các thực thể sống.",
+      "các phân tử nước chuyển động không ngừng."
+    ],
+    correct: 3,
+    explanation: "Các phân tử nước chuyển động nhiệt hỗn loạn không ngừng, va chạm vào các hạt phấn hoa từ mọi phía làm chúng chuyển động hỗn độn không ngừng."
+  },
+  {
+    id: "1.23",
+    topic: "topic1",
+    topicName: "Thuyết động học phân tử chất khí",
+    question: "Trong điều kiện chuẩn về nhiệt độ và áp suất thì",
+    options: [
+      "các phân tử của các chất khí khác nhau chuyển động với vận tốc như nhau.",
+      "số phân tử trong một đơn vị thể tích của các chất khí khác nhau là như nhau.",
+      "khoảng cách giữa các phân tử rất nhỏ so với kích thước của các phân tử.",
+      "các phân tử khí khác nhau va chạm vào thành bình tác dụng vào thành bình những lực bằng nhau."
+    ],
+    correct: 1,
+    explanation: "Ở điều kiện chuẩn, số phân tử trong một đơn vị thể tích của các chất khí khác nhau là như nhau."
+  },
+  {
+    id: "1.24",
+    topic: "topic1",
+    topicName: "Thuyết động học phân tử chất khí",
+    question: "Câu nào sau đây nói về chuyển động của phân tử là không đúng?",
+    options: [
+      "Các phân tử chuyển động càng nhanh thì nhiệt độ càng cao.",
+      "Các phân tử chuyển động không ngừng.",
+      "Các phân tử khí không dao động quanh vị trí cân bằng.",
+      "Chuyển động của phân tử là do lực tương tác phân tử gây ra."
+    ],
+    correct: 3,
+    explanation: "Chuyển động của các phân tử luôn không ngừng chứ không phải do lực tương tác phân tử gây ra và chuyển động này càng nhanh thì nhiệt độ càng cao."
+  },
+  {
+    id: "1.25",
+    topic: "topic1",
+    topicName: "Thuyết động học phân tử chất khí",
+    question: "Chọn phát biểu đúng khi nói về chuyển động của các phân tử, nguyên tử?",
+    options: [
+      "Các nguyên tử, phân tử chuyển động theo một hướng nhất định.",
+      "Các nguyên tử, phân tử cấu tạo nên vật chuyển động càng nhanh thì nhiệt độ càng cao.",
+      "Nhiệt độ của vật càng cao thì các nguyên tử, phân tử cấu tạo nên vật chuyển động chậm lại.",
+      "Các phân tử, nguyên tử có lúc chuyển động, có lúc đứng yên."
+    ],
+    correct: 1,
+    explanation: "Các nguyên tử, phân tử luôn chuyển động hỗn độn không ngừng về mọi phía. Nhiệt độ của vật càng cao thì các nguyên tử, phân tử cấu tạo nên vật chuyển động càng nhanh."
+  },
+  {
+    id: "1.26",
+    topic: "topic1",
+    topicName: "Thuyết động học phân tử chất khí",
+    question: "Phát biểu nào sau đây là sai khi nói về lực tương tác giữa các phân tử?",
+    options: [
+      "Lực hút phân tử có thể lớn hơn lực đẩy phân tử.",
+      "Lực hút phân tử có thể bằng lực đẩy phân tử.",
+      "Lực phân tử chỉ đáng kể khi các phân tử ở rất gần nhau.",
+      "Lực hút phân tử không thể lớn hơn lực đẩy phân tử."
+    ],
+    correct: 3,
+    explanation: "Lực hút phân tử có thể lớn hơn, nhỏ hơn hoặc bằng lực đẩy phân tử, tùy thuộc vào khoảng cách giữa các phân tử."
+  },
+  {
+    id: "1.27",
+    topic: "topic1",
+    topicName: "Thuyết động học phân tử chất khí",
+    question: "Phát biểu nào sau đây là sai khi nói về chất khí?",
+    options: [
+      "Lực tương tác giữa các nguyên tử, phân tử rất yếu.",
+      "Chất khí luôn chiếm toàn bộ thể tích bình chứa và có thể nén được dễ dàng.",
+      "Các phân tử khí ở rất gần nhau.",
+      "Chất khí không có hình dạng và thể tích riêng."
+    ],
+    correct: 2,
+    explanation: "Trong chất khí, các phân tử ở cách xa nhau (khoảng cách lớn hơn nhiều so với kích thước của chúng) nên lực tương tác phân tử rất yếu."
+  },
+  {
+    id: "1.28",
+    topic: "topic1",
+    topicName: "Thuyết động học phân tử chất khí",
+    question: "Nguyên nhân cơ bản gây ra áp suất chất khí là do",
+    options: [
+      "chất khí thường có thể tích lớn.",
+      "chất khí thường được đựng trong bình kín.",
+      "chất khí thường có khối lượng riêng nhỏ.",
+      "trong khi chuyển động, các phân tử khí va chạm với nhau và va chạm vào thành bình."
+    ],
+    correct: 3,
+    explanation: "Trong khi chuyển động hỗn loạn không ngừng, các phân tử khí va chạm với nhau và va chạm vào thành bình gây ra áp suất lên thành bình."
+  },
+  {
+    id: "1.29",
+    topic: "topic1",
+    topicName: "Thuyết động học phân tử chất khí",
+    question: "Hai chất khí có thể trộn lẫn vào nhau tạo nên một hỗn hợp khí đồng đều là vì:<br>(1). các phân tử khí chuyển động nhiệt.<br>(2). hai chất khí đã cho không có phản ứng hoá học với nhau.<br>(3). giữa các phân tử khí có khoảng trống.",
+    options: [
+      "cả (1), (2) và (3).",
+      "(2) và (3).",
+      "(1) và (2).",
+      "(3) và (1)."
+    ],
+    correct: 0,
+    explanation: "Cả (1), (2) và (3): Nhờ chuyển động nhiệt và khoảng trống giữa các phân tử nên hai khí khuếch tán vào nhau; đồng thời không xảy ra phản ứng hóa học để tạo hỗn hợp khí đồng đều."
+  },
+  {
+    id: "1.30",
+    topic: "topic1",
+    topicName: "Thuyết động học phân tử chất khí",
+    question: "Tính chất nào sau đây không phải là tính chất của chất ở thể khí?",
+    options: [
+      "Có lực tương tác phân tử nhỏ hơn lực tương tác phân tử ở thể rắn và thể lỏng.",
+      "Có thể nén được dễ dàng.",
+      "Có các phân tử chuyển động hoàn toàn hỗn độn.",
+      "Có hình dạng và thể tích riêng."
+    ],
+    correct: 3,
+    explanation: "Lực tương tác giữa các phân tử khí rất yếu nên chất khí chuyển động hỗn loạn và không có hình dạng và thể tích riêng."
+  },
+  {
+    id: "1.31",
+    topic: "topic1",
+    topicName: "Thuyết động học phân tử chất khí",
+    question: "Phát biểu nào sau đây nói về chuyển động của phân tử là không đúng?",
+    options: [
+      "Chuyển động của phân tử là do lực tương tác phân tử gây ra.",
+      "Các phân tử khí lí tưởng chuyển động theo đường thẳng giữa hai vật va chạm.",
+      "Các phân tử chuyển động không ngừng.",
+      "Các phân tử chuyển động càng nhanh thì nhiệt độ của vật càng cao."
+    ],
+    correct: 0,
+    explanation: "Chuyển động của phân tử là chuyển động nhiệt không ngừng của vật chất, không phải do lực tương tác phân tử gây ra."
+  },
+  {
+    id: "1.32",
+    topic: "topic1",
+    topicName: "Thuyết động học phân tử chất khí",
+    question: "Trong các tính chất sau, tính chất nào không phải của chất khí?",
+    options: [
+      "Tác dụng lực lên mọi phần diện tích bình chứa.",
+      "Chiếm toàn bộ thể tích của bình chứa.",
+      "Có hình dạng cố định.",
+      "Thể tích giảm đáng kể khi tăng áp suất."
+    ],
+    correct: 2,
+    explanation: "Chất khí không có hình dạng cố định mà luôn có hình dạng của bình chứa."
+  },
+  {
+    id: "1.33",
+    topic: "topic1",
+    topicName: "Thuyết động học phân tử chất khí",
+    question: "Khi nói về các tính chất của chất khí, phương án đúng là",
+    options: [
+      "khi áp suất tác dụng lên một lượng khí tăng thì thể tích của khí tăng đáng kể.",
+      "chất khí có khối lượng riêng lớn so với chất rắn và chất lỏng.",
+      "chất khí có tính dễ nén.",
+      "bành trướng là chiếm một phần thể tích của bình chứa."
+    ],
+    correct: 2,
+    explanation: "Chất khí có tính dễ nén vì khoảng cách giữa các phân tử khí lớn so với chất lỏng hay rắn."
+  },
+  {
+    id: "1.34",
+    topic: "topic1",
+    topicName: "Thuyết động học phân tử chất khí",
+    question: "Câu nào sau đây nói về lực tương tác phân tử là không đúng?",
+    options: [
+      "Lực hút phân tử có thể bằng lực đẩy phân tử.",
+      "Lực phân tử chỉ đáng kể khi các phân tử ở rất gần nhau.",
+      "Lực hút phân tử không thể lớn hơn lực đẩy phân tử.",
+      "Lực hút phân tử có thể lớn hơn lực đẩy phân tử."
+    ],
+    correct: 2,
+    explanation: "Lực tương tác phân tử có độ lớn phụ thuộc vào khoảng cách giữa các phân tử nên khi khoảng cách nhỏ thì lực đẩy mạnh hơn lực hút và khi khoảng cách lớn hơn một chút thì lực hút lớn hơn lực đẩy."
+  },
+  {
+    id: "1.35",
+    topic: "topic1",
+    topicName: "Thuyết động học phân tử chất khí",
+    question: "Theo thuyết động học phân tử, các phân tử vật chất luôn chuyển động không ngừng. Thuyết này áp dụng cho",
+    options: [
+      "chất rắn, lỏng và khí.",
+      "chất khí.",
+      "chất lỏng.",
+      "chất rắn."
+    ],
+    correct: 0,
+    explanation: "Thuyết động học phân tử áp dụng cho cả ba thể: chất rắn, lỏng và khí."
+  },
+  {
+    id: "1.36",
+    topic: "topic1",
+    topicName: "Thuyết động học phân tử chất khí",
+    question: "Khi nhiệt độ giảm thì hiện tượng khuếch tán",
+    options: [
+      "có thể xảy ra nhanh hơn hoặc chậm hơn.",
+      "xảy ra nhanh hơn.",
+      "xảy ra chậm hơn.",
+      "không thay đổi."
+    ],
+    correct: 2,
+    explanation: "Nhiệt độ của vật càng cao thì các nguyên tử, phân tử cấu tạo nên vật chuyển động càng nhanh. Khi nhiệt độ giảm đi, các nguyên tử chuyển động chậm lại dẫn đến hiện tượng khuếch tán xảy ra chậm hơn."
+  },
+  {
+    id: "1.37",
+    topic: "topic1",
+    topicName: "Thuyết động học phân tử chất khí",
+    question: "Khi nhiệt độ trong một bình tăng cao, áp suất của khối khí trong bình cũng tăng lên vì",
+    options: [
+      "phân tử va chạm với nhau nhiều hơn.",
+      "phân tử khí chuyển động nhanh hơn.",
+      "khoảng cách giữa các phân tử tăng.",
+      "số lượng phân tử tăng."
+    ],
+    correct: 1,
+    explanation: "Khi nhiệt độ trong bình kín tăng cao, các phân tử chất khí sẽ chuyển động nhanh hơn, nên va chạm với thành bình mạnh và nhiều hơn, làm áp suất trong bình tăng lên."
+  },
+  {
+    id: "1.38",
+    topic: "topic1",
+    topicName: "Thuyết động học phân tử chất khí",
+    question: "Tính chất không phải là của phân tử của vật chất ở thể khí là",
+    options: [
+      "chuyển động hỗn loạn.",
+      "chuyển động hỗn loạn và không ngừng.",
+      "chuyển động không ngừng.",
+      "chuyển động hỗn loạn xung quanh các vị trí cân bằng cố định."
+    ],
+    correct: 3,
+    explanation: "Tính chất không phải là của phân tử của vật chất ở thể khí là chuyển động hỗn loạn xung quanh các vị trí cân bằng cố định (đây là tính chất của phân tử ở thể rắn)."
+  },
+
+  // ================= CHUYÊN ĐỀ 2: ĐỊNH LUẬT BOYLE (32 CÂU) =================
+  {
+    id: "2.1",
+    topic: "topic2",
+    topicName: "Định luật Boyle",
+    question: "Khi nén khí đẳng nhiệt thì số phân tử trong một đơn vị thể tích",
+    options: [
+      "tăng tỉ lệ với bình phương áp suất.",
+      "tăng tỉ lệ thuận với áp suất.",
+      "không đổi.",
+      "giảm tỉ lệ nghịch với áp suất."
+    ],
+    correct: 1,
+    explanation: "Mật độ phân tử $n = \frac{N}{V}$. Khi nén khí đẳng nhiệt ($T = \text{hằng số}$), theo định luật Boyle $pV = \text{hằng số} \Rightarrow V \sim \frac{1}{p}$. Suy ra $n \sim p$, nên khi nén khí đẳng nhiệt số phân tử trong một đơn vị thể tích tăng tỉ lệ thuận với áp suất."
+  },
+  {
+    id: "2.2",
+    topic: "topic2",
+    topicName: "Định luật Boyle",
+    question: "Hệ thức phù hợp với định luật Boyle là",
+    options: [
+      "$p_1 = \frac{V_2}{V_1}$",
+      "$\frac{p_1}{p_2} = \frac{V_1}{V_2}$",
+      "$p_1V_1 = p_2V_2$.",
+      "$p \sim V$."
+    ],
+    correct: 2,
+    explanation: "Nội dung định luật Boyle là trong quá trình đẳng nhiệt của một lượng khí xác định, áp suất tỉ lệ nghịch với thể tích: $p_1V_1 = p_2V_2$."
+  },
+  {
+    id: "2.3",
+    topic: "topic2",
+    topicName: "Định luật Boyle",
+    question: "Khi nói về quá trình đẳng nhiệt. Đặc điểm không phải của quá trình đẳng nhiệt là",
+    options: [
+      "khi áp suất tăng thì thể tích khối khí giảm.",
+      "nhiệt độ khối khí tăng thì áp suất tăng.",
+      "nhiệt độ của khối khí không đổi.",
+      "khi thể tích khối khí tăng thì áp suất giảm."
+    ],
+    correct: 1,
+    explanation: "Quá trình đẳng nhiệt thì nhiệt độ của khối khí luôn được giữ không đổi."
+  },
+  {
+    id: "2.4",
+    topic: "topic2",
+    topicName: "Định luật Boyle",
+    question: "Định luật Boyle được áp dụng trong quá trình",
+    options: [
+      "khối khí giãn nở tự do.",
+      "khối khí đựng trong bình kín và bình không giãn nở nhiệt.",
+      "nhiệt độ của khối khí không đổi.",
+      "khối khí không có sự trao đổi nhiệt lượng với bên ngoài."
+    ],
+    correct: 2,
+    explanation: "Định luật Boyle được áp dụng trong quá trình đẳng nhiệt (quá trình biến đổi trạng thái trong đó nhiệt độ của khối khí không đổi)."
+  },
+  {
+    id: "2.5",
+    topic: "topic2",
+    topicName: "Định luật Boyle",
+    question: "Nén khí đẳng nhiệt từ thể tích $9\text{ lít}$ đến thể tích $6\text{ lít}$ thì áp suất tăng một lượng $\Delta p = 50\text{ kPa}$. Áp suất ban đầu của khí đó là",
+    options: [
+      "$80\text{ kPa}$.",
+      "$100\text{ kPa}$.",
+      "$40\text{ kPa}$.",
+      "$60\text{ kPa}$."
+    ],
+    correct: 1,
+    explanation: "Áp dụng định luật Boyle: $p_1V_1 = p_2V_2 \Leftrightarrow p_1 \cdot 9 = (p_1 + 50) \cdot 6 \Leftrightarrow 3p_1 = 300 \Rightarrow p_1 = 100\text{ kPa}$."
+  },
+  {
+    id: "2.6",
+    topic: "topic2",
+    topicName: "Định luật Boyle",
+    question: "Hệ thức không phù hợp với định luật Boyle là",
+    options: [
+      "$V \sim \frac{1}{p}$.",
+      "$V \sim p$.",
+      "$p \sim \frac{1}{V}$.",
+      "$p_1V_1 = p_2V_2$."
+    ],
+    correct: 1,
+    explanation: "Trong quá trình đẳng nhiệt của một lượng khí nhất định, áp suất tỉ lệ nghịch với thể tích nên $V \sim p$ là không phù hợp."
+  },
+  {
+    id: "2.7",
+    topic: "topic2",
+    topicName: "Định luật Boyle",
+    question: "Nén đẳng nhiệt một khối khí nhất định từ thể tích $10\text{ lít}$ đến thể tích $4\text{ lít}$ thì áp suất của khí tăng lên",
+    options: [
+      "$2\text{ lần}$.",
+      "$1,5\text{ lần}$.",
+      "$4\text{ lần}$.",
+      "$2,5\text{ lần}$."
+    ],
+    correct: 3,
+    explanation: "Áp dụng định luật Boyle cho quá trình đẳng nhiệt: $\frac{p_2}{p_1} = \frac{V_1}{V_2} = \frac{10}{4} = 2,5\text{ lần}$."
+  },
+  {
+    id: "2.8",
+    topic: "topic2",
+    topicName: "Định luật Boyle",
+    question: "Trong hệ tọa độ $(V, T)$, đường đẳng nhiệt là",
+    options: [
+      "đường thẳng vuông góc với trục $OV$.",
+      "đường thẳng kéo dài qua gốc tọa độ.",
+      "đường hyperbol.",
+      "đường thẳng vuông góc với trục $OT$."
+    ],
+    correct: 3,
+    explanation: "Trong hệ tọa độ $(V, T)$, đường đẳng nhiệt là đường có nhiệt độ không đổi nên là đường thẳng vuông góc với trục $OT$."
+  },
+  {
+    id: "2.9",
+    topic: "topic2",
+    topicName: "Định luật Boyle",
+    question: "Dưới áp suất $10^5\text{ Pa}$ một lượng khí có thể tích $10\text{ lít}$. Nếu nhiệt độ được giữ không đổi và áp suất tăng $25\%$ so với ban đầu thì thể tích của lượng khí này là",
+    options: [
+      "$V_2 = 8\text{ lít}$.",
+      "$V_2 = 12,5\text{ lít}$.",
+      "$V_2 = 40\text{ lít}$.",
+      "$V_2 = 2,5\text{ lít}$."
+    ],
+    correct: 0,
+    explanation: "Áp suất tăng $25\%$ nên $p_2 = 1,25p_1 = 1,25 \cdot 10^5\text{ Pa}$. Áp dụng định luật Boyle: $p_1V_1 = p_2V_2 \Rightarrow V_2 = \frac{10^5 \cdot 10}{1,25 \cdot 10^5} = 8\text{ lít}$."
+  },
+  {
+    id: "2.10",
+    topic: "topic2",
+    topicName: "Định luật Boyle",
+    question: "Một bọt khí khi nổi lên từ một đáy hồ có độ lớn gấp $1,2$ lần khi đến mặt nước. Biết trọng lượng riêng của nước là $d = 10^4\text{ N/m}^3$, áp suất khí quyển là $10^5\text{ N/m}^2$. Độ sâu của đáy hồ là",
+    options: [
+      "$4\text{ m}$.",
+      "$3\text{ m}$.",
+      "$1\text{ m}$.",
+      "$2\text{ m}$."
+    ],
+    correct: 3,
+    explanation: "Gọi áp suất bọt khí tại mặt nước là $p_0 = 10^5\text{ N/m}^2$, tại đáy hồ là $p = p_0 + d\cdot h$. Ta có $(p_0 + d\cdot h)V_1 = p_0 \cdot (1,2V_1) \Rightarrow 10^5 + 10^4h = 1,2 \cdot 10^5 \Rightarrow h = 2\text{ m}$."
+  },
+  {
+    id: "2.11",
+    topic: "topic2",
+    topicName: "Định luật Boyle",
+    question: "Trong các hệ thức sau đây, hệ thức không phù hợp với định luật Boyle là",
+    options: [
+      "$V \sim \frac{1}{p}$.",
+      "$p_1V_1 = p_2V_2$.",
+      "$V \sim p$.",
+      "$p \sim \frac{1}{V}$."
+    ],
+    correct: 2,
+    explanation: "Nội dung định luật Boyle là trong quá trình đẳng nhiệt của một lượng khí xác định, áp suất tỉ lệ nghịch với thể tích, nên $V \sim p$ là không phù hợp."
+  },
+  {
+    id: "2.12",
+    topic: "topic2",
+    topicName: "Định luật Boyle",
+    question: "Khi giãn nở khí đẳng nhiệt thì",
+    options: [
+      "áp suất khí tăng lên.",
+      "số phân tử khí trong một đơn vị thể tích giảm.",
+      "số phân tử khí trong một đơn vị thể tích tăng.",
+      "khối lượng riêng của khí tăng lên."
+    ],
+    correct: 1,
+    explanation: "Mật độ phân tử $n = \frac{N}{V}$. Khi giãn nở khí đẳng nhiệt (thể tích $V$ tăng) thì số phân tử khí trong một đơn vị thể tích giảm."
+  },
+  {
+    id: "2.13",
+    topic: "topic2",
+    topicName: "Định luật Boyle",
+    question: "Xét một khối khí có nhiệt độ không đổi, khối lượng riêng của chất khí phụ thuộc vào áp suất khí theo hệ thức",
+    options: [
+      "$p_1\rho_2 = p_2\rho_1$.",
+      "$p_1\rho = \text{const}$.",
+      "$p \sim \frac{1}{\rho}$.",
+      "$p_1\rho_1 = p_2\rho_2$."
+    ],
+    correct: 0,
+    explanation: "Khối lượng của khối khí không đổi nên $m = \rho_1V_1 = \rho_2V_2$. Áp dụng định luật Boyle $p_1V_1 = p_2V_2 \Rightarrow \frac{p_1}{\rho_1} = \frac{p_2}{\rho_2} \Leftrightarrow p_1\rho_2 = p_2\rho_1$."
+  },
+  {
+    id: "2.14",
+    topic: "topic2",
+    topicName: "Định luật Boyle",
+    question: "Nén khí đẳng nhiệt từ thể tích $10\text{ lít}$ đến thể tích $4\text{ lít}$ thì áp suất của khí tăng lên bao nhiêu lần?",
+    options: [
+      "$1,5\text{ lần}$.",
+      "$2\text{ lần}$.",
+      "$2,5\text{ lần}$.",
+      "$4\text{ lần}$."
+    ],
+    correct: 2,
+    explanation: "Áp dụng định luật Boyle: $\frac{p_2}{p_1} = \frac{V_1}{V_2} = \frac{10}{4} = 2,5\text{ lần}$."
+  },
+  {
+    id: "2.15",
+    topic: "topic2",
+    topicName: "Định luật Boyle",
+    question: "Một khối khí lí tưởng xác định có áp suất $1\text{ atm}$ được làm tăng áp suất đến $4\text{ atm}$ ở nhiệt độ không đổi thì thể tích biến đổi một lượng $6\text{ lít}$. Thể tích ban đầu của khối khí đó có giá trị là",
+    options: [
+      "$4\text{ lít}$.",
+      "$8\text{ lít}$.",
+      "$12\text{ lít}$.",
+      "$16\text{ lít}$."
+    ],
+    correct: 1,
+    explanation: "Áp suất tăng nên thể tích giảm: $V_2 = V_1 - 6$. Áp dụng định luật Boyle: $1 \cdot V_1 = 4 \cdot (V_1 - 6) \Rightarrow 3V_1 = 24 \Rightarrow V_1 = 8\text{ lít}$."
+  },
+  {
+    id: "2.16",
+    topic: "topic2",
+    topicName: "Định luật Boyle",
+    question: "Một lượng khí có thể tích $1\text{ m}^3$ và áp suất $1\text{ atm}$. Người ta nén đẳng nhiệt khí tới áp suất $3,5\text{ atm}$. Thể tích của khí nén là",
+    options: [
+      "$2,86\text{ m}^3$.",
+      "$0,35\text{ m}^3$.",
+      "$0,286\text{ m}^3$.",
+      "$2,5\text{ m}^3$."
+    ],
+    correct: 2,
+    explanation: "Áp dụng định luật Boyle: $p_1V_1 = p_2V_2 \Rightarrow V_2 = \frac{1 \cdot 1}{3,5} \approx 0,286\text{ m}^3$."
+  },
+  {
+    id: "2.17",
+    topic: "topic2",
+    topicName: "Định luật Boyle",
+    question: "Hệ thức cho biết mối liên hệ giữa khối lượng riêng và áp suất của chất khí trong quá trình đẳng nhiệt là",
+    options: [
+      "$\frac{\rho_1}{\rho_2} = 2\frac{p_1}{p_2}$.",
+      "$\frac{\rho_1}{\rho_2} = \frac{p_2}{p_1}$.",
+      "$\frac{\rho_1}{\rho_2} = \frac{1}{2}\frac{p_1}{p_2}$.",
+      "$\frac{\rho_1}{\rho_2} = \frac{p_1}{p_2}$."
+    ],
+    correct: 3,
+    explanation: "Từ định luật Boyle $p_1V_1 = p_2V_2$ và $V = \frac{m}{\rho}$ ta suy ra $\frac{\rho_1}{\rho_2} = \frac{p_1}{p_2}$."
+  },
+  {
+    id: "2.18",
+    topic: "topic2",
+    topicName: "Định luật Boyle",
+    question: "Trên hình bên là hai đường đẳng nhiệt của cùng một lượng khí lý tưởng ở hai nhiệt độ khác nhau. Thông tin đúng khi so sánh nhiệt độ $T_1$ và $T_2$ là",
+    illustration: SVG_ISOTHERMS_T1_T2,
+    options: [
+      "$T_2 = T_1$.",
+      "$T_2 \le T_1$.",
+      "$T_2 > T_1$.",
+      "$T_2 < T_1$."
+    ],
+    correct: 2,
+    explanation: "Kẻ đường thẳng song song với trục $Op$ (cùng thể tích $V$), cắt đường $T_1$ tại điểm có áp suất $p_1$ và cắt đường $T_2$ tại điểm có áp suất $p_2 > p_1$, do đó $T_2 > T_1$."
+  },
+  {
+    id: "2.19",
+    topic: "topic2",
+    topicName: "Định luật Boyle",
+    question: "Nén đẳng nhiệt một khối khí xác định từ $12\text{ lít}$ xuống $3\text{ lít}$ thì áp suất tăng lên",
+    options: [
+      "$4\text{ lần}$.",
+      "áp suất không đổi.",
+      "$2\text{ lần}$.",
+      "$3\text{ lần}$."
+    ],
+    correct: 0,
+    explanation: "Áp dụng định luật Boyle ta có $\frac{p_2}{p_1} = \frac{V_1}{V_2} = \frac{12}{3} = 4\text{ lần}$."
+  },
+  {
+    id: "2.20",
+    topic: "topic2",
+    topicName: "Định luật Boyle",
+    question: "Khi ấn pittông từ từ xuống để nén khí trong xilanh kín thì",
+    options: [
+      "áp suất khí tăng.",
+      "khối lượng khí tăng.",
+      "áp suất khí giảm.",
+      "nhiệt độ khí giảm."
+    ],
+    correct: 0,
+    explanation: "Quá trình nén khí trong xilanh có thể coi gần đúng là quá trình đẳng nhiệt nếu ấn pittông từ từ. Vì $V$ giảm khi ấn pittông xuống nên áp suất $p$ sẽ tăng."
+  },
+  {
+    id: "2.21",
+    topic: "topic2",
+    topicName: "Định luật Boyle",
+    question: "Đẳng quá trình là quá trình trong đó có",
+    options: [
+      "một thông số trạng thái không đổi.",
+      "ít nhất hai thông số trạng thái không đổi.",
+      "các thông số trạng thái đều biến đổi.",
+      "có hơn phân nửa số thông số trạng thái không đổi."
+    ],
+    correct: 0,
+    explanation: "Đẳng quá trình là quá trình biến đổi trạng thái của lượng khí xác định mà trong đó có một thông số trạng thái không thay đổi."
+  },
+  {
+    id: "2.22",
+    topic: "topic2",
+    topicName: "Định luật Boyle",
+    question: "Xét một khối khí có nhiệt độ không đổi, khối lượng riêng của chất khí phụ thuộc vào thể tích khí theo hệ thức",
+    options: [
+      "$\rho \sim V$.",
+      "$V_1\rho_1 = V_2\rho_2$.",
+      "$V_1\rho_2 = V_2\rho_1$.",
+      "$\rho \sim V^2$."
+    ],
+    correct: 1,
+    explanation: "Khối lượng của khối khí không đổi nên ta có $m = \rho_1V_1 = \rho_2V_2$ hay $V_1\rho_1 = V_2\rho_2$."
+  },
+  {
+    id: "2.23",
+    topic: "topic2",
+    topicName: "Định luật Boyle",
+    question: "Trong hệ tọa độ $(p, V)$, đường đẳng nhiệt là",
+    options: [
+      "đường thẳng vuông góc với trục $Op$.",
+      "đường thẳng vuông góc với trục $OV$.",
+      "đường thẳng kéo dài đi qua $O$.",
+      "đường hyperbol."
+    ],
+    correct: 3,
+    explanation: "Trong hệ tọa độ $(p, V)$, đường đẳng nhiệt là đường hyperbol."
+  },
+  {
+    id: "2.24",
+    topic: "topic2",
+    topicName: "Định luật Boyle",
+    question: "Đơn vị không phải đơn vị của thể tích là",
+    options: [
+      "$\text{cm}^3$.",
+      "$\text{lít}$.",
+      "$\text{at}$.",
+      "$\text{mm}^3$."
+    ],
+    correct: 2,
+    explanation: "Atmôtphe kỹ thuật ($\text{at}$) là đơn vị đo áp suất, không phải đơn vị đo thể tích."
+  },
+  {
+    id: "2.25",
+    topic: "topic2",
+    topicName: "Định luật Boyle",
+    question: "Mối liên hệ giữa nhiệt độ $t^\circ\text{C}$ và nhiệt độ $T^\circ\text{K}$ là",
+    options: [
+      "$T = t + 327$.",
+      "$t = T + 273$.",
+      "$T = t - 327$.",
+      "$T = t + 273$."
+    ],
+    correct: 3,
+    explanation: "Công thức chuyển đổi giữa thang nhiệt độ Celsius và Kelvin là $T(\text{K}) = t(^\circ\text{C}) + 273$."
+  },
+  {
+    id: "2.26",
+    topic: "topic2",
+    topicName: "Định luật Boyle",
+    question: "Chọn câu sai. Với một lượng khí không đổi, áp suất chất khí càng lớn khi",
+    options: [
+      "nhiệt độ của khí càng cao.",
+      "mật độ phân tử chất khí càng lớn.",
+      "thể tích của khí càng nhỏ.",
+      "thể tích của khí càng lớn."
+    ],
+    correct: 3,
+    explanation: "Trong quá trình đẳng nhiệt, áp suất tỉ lệ nghịch với thể tích nên thể tích của khí càng lớn thì áp suất càng nhỏ."
+  },
+  {
+    id: "2.27",
+    topic: "topic2",
+    topicName: "Định luật Boyle",
+    question: "Một bọt khí có thể tích $1,5\text{ cm}^3$ được tạo ra từ khoang tàu ngầm đang lặn ở độ sâu $100\text{ m}$ dưới mực nước biển. Giả sử nhiệt độ của bọt khí là không đổi, biết khối lượng riêng của nước biển là $10^3\text{ kg/m}^3$, áp suất khí quyển là $p_0 = 10^5\text{ Pa}$ và $g = 10\text{ m/s}^2$. Khi bọt khí này nổi lên mặt nước thì sẽ có thể tích bằng",
+    options: [
+      "$15,5\text{ cm}^3$.",
+      "$16,5\text{ cm}^3$.",
+      "$15\text{ cm}^3$.",
+      "$16\text{ cm}^3$."
+    ],
+    correct: 1,
+    explanation: "Áp suất tại độ sâu $100\text{ m}$: $p_1 = p_0 + \rho gh = 10^5 + 10^3 \cdot 10 \cdot 100 = 1,1 \cdot 10^6\text{ Pa}$. Áp dụng định luật Boyle: $p_1V_1 = p_0V_2 \Rightarrow V_2 = \frac{1,1 \cdot 10^6 \cdot 1,5}{10^5} = 16,5\text{ cm}^3$."
+  },
+  {
+    id: "2.28",
+    topic: "topic2",
+    topicName: "Định luật Boyle",
+    question: "Nén một lượng khí lí tưởng trong bình kín thì quá trình đẳng nhiệt xảy ra là",
+    options: [
+      "áp suất tăng, nhiệt độ tỉ lệ thuận với áp suất.",
+      "áp suất tăng, nhiệt độ không đổi.",
+      "áp suất giảm, nhiệt độ tỉ lệ nghịch với áp suất.",
+      "áp suất giảm, nhiệt độ không đổi."
+    ],
+    correct: 1,
+    explanation: "Theo định luật Boyle, trong quá trình đẳng nhiệt nhiệt độ không đổi, khi nén thì thể tích khí giảm và áp suất sẽ tăng."
+  },
+  {
+    id: "2.29",
+    topic: "topic2",
+    topicName: "Định luật Boyle",
+    question: "Khi nói về quan hệ giữa nhiệt độ Celsius ($^\circ\text{C}$) và nhiệt độ Kelvin ($\text{K}$). Chọn phát biểu sai?",
+    options: [
+      "$T = t + 273$.",
+      "Khi nhiệt độ Celsius tăng $1^\circ\text{C}$ thì nhiệt độ Kelvin tăng $273\text{ K}$.",
+      "Nước sôi có nhiệt độ $373\text{ K}$.",
+      "Nước đá có nhiệt độ $273\text{ K}$."
+    ],
+    correct: 1,
+    explanation: "Khi nhiệt độ Celsius tăng $1^\circ\text{C}$ thì nhiệt độ Kelvin tăng $1\text{ K}$."
+  },
+  {
+    id: "2.30",
+    topic: "topic2",
+    topicName: "Định luật Boyle",
+    question: "Trong quá trình đẳng nhiệt thể tích $V$ của một khối lượng khí xác định giảm $2\text{ lần}$ thì áp suất $p$ của khí sẽ",
+    options: [
+      "tăng $4\text{ lên lần}$.",
+      "không đổi.",
+      "tăng lên $2\text{ lần}$.",
+      "giảm đi $2\text{ lần}$."
+    ],
+    correct: 2,
+    explanation: "Trong quá trình đẳng nhiệt, áp suất tỉ lệ nghịch với thể tích nên thể tích giảm $2\text{ lần}$ thì áp suất tăng lên $2\text{ lần}$."
+  },
+  {
+    id: "2.31",
+    topic: "topic2",
+    topicName: "Định luật Boyle",
+    question: "Định luật Boyle được áp dụng trong quá trình",
+    options: [
+      "khối khí không có sự trao đổi nhiệt lượng với bên ngoài.",
+      "nhiệt độ của khối khí không đổi.",
+      "khối khí giãn nở tự do.",
+      "khối khí đựng trong bình kín và bình không giãn nở nhiệt."
+    ],
+    correct: 1,
+    explanation: "Quá trình biến đổi trạng thái trong đó nhiệt độ được giữ không đổi gọi là quá trình đẳng nhiệt (áp dụng định luật Boyle)."
+  },
+  {
+    id: "2.32",
+    topic: "topic2",
+    topicName: "Định luật Boyle",
+    question: "Một khối khí lí tưởng xác định có áp suất $1\text{ atm}$ được làm tăng áp suất đến $4\text{ atm}$ ở nhiệt độ không đổi thì thể tích biến đổi một lượng $3\text{ lít}$. Thể tích ban đầu của khối khí đó là",
+    options: [
+      "$4\text{ lít}$.",
+      "$8\text{ lít}$.",
+      "$16\text{ lít}$.",
+      "$12\text{ lít}$."
+    ],
+    correct: 0,
+    explanation: "Áp suất tăng nên thể tích giảm: $V_2 = V_1 - 3$. Áp dụng định luật Boyle: $1 \cdot V_1 = 4 \cdot (V_1 - 3) \Rightarrow 3V_1 = 12 \Rightarrow V_1 = 4\text{ lít}$."
+  }
+];
+
+let selectedMode = 'topic1';
+let activeQuestions = [];
+let userAnswers = [];
+let currentIndex = 0;
+let score = 0;
+let streak = 0;
+let maxStreak = 0;
+
+function selectMode(mode, el) {
+    selectedMode = mode;
+    document.querySelectorAll('.topic-card').forEach(c => c.classList.remove('selected'));
+    el.classList.add('selected');
+}
+
+function shuffleArray(arr) {
+    const a = [...arr];
+    for (let i = a.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [a[i], a[j]] = [a[j], a[i]];
+    }
+    return a;
+}
+
+function buildQuestionSet(sourceList) {
+    const shuffleQ = document.getElementById('optShuffleQ').checked;
+    const shuffleA = document.getElementById('optShuffleA').checked;
+
+    let list = sourceList.map(q => {
+        let opts = q.options.map((text, idx) => ({ text, isCorrect: idx === q.correct }));
+        if (shuffleA) {
+            opts = shuffleArray(opts);
+        }
+        return {
+            ...q,
+            shuffledOptions: opts
+        };
+    });
+
+    if (shuffleQ) {
+        list = shuffleArray(list);
+    }
+    return list;
+}
+
+function startQuiz(customList = null) {
+    let baseList = customList;
+    if (!baseList) {
+        if (selectedMode === 'topic1') {
+            baseList = QUESTIONS_DB.filter(q => q.topic === 'topic1');
+        } else if (selectedMode === 'topic2') {
+            baseList = QUESTIONS_DB.filter(q => q.topic === 'topic2');
+        } else {
+            baseList = [...QUESTIONS_DB];
+        }
+    }
+
+    activeQuestions = buildQuestionSet(baseList);
+    userAnswers = new Array(activeQuestions.length).fill(null);
+    currentIndex = 0;
+    score = 0;
+    streak = 0;
+    maxStreak = 0;
+
+    document.getElementById('startScreen').classList.remove('active');
+    document.getElementById('resultScreen').classList.remove('active');
+    document.getElementById('quizScreen').classList.add('active');
+    document.getElementById('liveStats').style.display = 'flex';
+
+    renderPalette();
+    renderQuestion();
+}
+
+function renderPalette() {
+    const pal = document.getElementById('qPalette');
+    pal.innerHTML = '';
+    activeQuestions.forEach((q, idx) => {
+        const btn = document.createElement('button');
+        btn.className = 'pal-btn';
+        btn.textContent = idx + 1;
+        if (idx === currentIndex) btn.classList.add('current');
+        if (userAnswers[idx] !== null) {
+            const isOk = q.shuffledOptions[userAnswers[idx]].isCorrect;
+            btn.classList.add(isOk ? 'done-ok' : 'done-bad');
+        }
+        btn.onclick = () => {
+            currentIndex = idx;
+            renderQuestion();
+        };
+        pal.appendChild(btn);
+    });
+}
+
+function renderQuestion() {
+    const q = activeQuestions[currentIndex];
+    const total = activeQuestions.length;
+
+    document.getElementById('statProgress').textContent = `${currentIndex + 1}/${total}`;
+    document.getElementById('statScore').textContent = score;
+    document.getElementById('statStreak').textContent = streak;
+    document.getElementById('progressBar').style.width = `${((currentIndex + 1) / total) * 100}%`;
+
+    document.getElementById('qTopicTag').textContent = q.topicName;
+    document.getElementById('qNumberTag').textContent = `Câu ${currentIndex + 1} / ${total}`;
+    document.getElementById('qText').innerHTML = q.question;
+
+    const illusDiv = document.getElementById('qIllustration');
+    if (q.illustration) {
+        illusDiv.innerHTML = q.illustration;
+        illusDiv.style.display = 'flex';
+    } else {
+        illusDiv.innerHTML = '';
+        illusDiv.style.display = 'none';
+    }
+
+    const grid = document.getElementById('answersGrid');
+    grid.innerHTML = '';
+    const letters = ['A', 'B', 'C', 'D'];
+    const chosenIdx = userAnswers[currentIndex];
+
+    q.shuffledOptions.forEach((opt, idx) => {
+        const btn = document.createElement('button');
+        btn.className = `ans-btn color-${idx % 4}`;
+        btn.innerHTML = `<span class="ans-letter">${letters[idx]}</span><span>${opt.text}</span>`;
+
+        if (chosenIdx !== null) {
+            btn.disabled = true;
+            if (opt.isCorrect) {
+                btn.classList.add('is-correct');
+            } else if (idx === chosenIdx) {
+                btn.classList.add('is-wrong');
+            } else {
+                btn.classList.add('dimmed');
+            }
+        } else {
+            btn.onclick = () => handleAnswer(idx);
+        }
+        grid.appendChild(btn);
+    });
+
+    const fb = document.getElementById('feedbackBox');
+    const showExp = document.getElementById('optShowExp').checked;
+    if (chosenIdx !== null && showExp) {
+        const isOk = q.shuffledOptions[chosenIdx].isCorrect;
+        fb.className = `feedback-box ${isOk ? 'correct' : 'wrong'}`;
+        fb.innerHTML = `<strong>${isOk ? '✅ Chính xác!' : '❌ Chưa chính xác!'}</strong><br>${q.explanation}`;
+    } else {
+        fb.className = 'feedback-box';
+        fb.innerHTML = '';
+    }
+
+    document.getElementById('btnPrev').disabled = currentIndex === 0;
+    document.getElementById('btnNext').textContent = currentIndex === total - 1 ? 'Hoàn thành 🏁' : 'Câu tiếp theo ➡';
+
+    renderPalette();
+    if (window.MathJax && MathJax.typesetPromise) {
+        MathJax.typesetPromise();
+    }
+}
+
+function handleAnswer(idx) {
+    if (userAnswers[currentIndex] !== null) return;
+    userAnswers[currentIndex] = idx;
+
+    const isOk = activeQuestions[currentIndex].shuffledOptions[idx].isCorrect;
+    if (isOk) {
+        streak++;
+        if (streak > maxStreak) maxStreak = streak;
+        score += 100 + Math.min(streak * 10, 50);
+    } else {
+        streak = 0;
+    }
+    renderQuestion();
+}
+
+function nextQuestion() {
+    if (currentIndex < activeQuestions.length - 1) {
+        currentIndex++;
+        renderQuestion();
+    } else {
+        finishQuiz();
+    }
+}
+
+function prevQuestion() {
+    if (currentIndex > 0) {
+        currentIndex--;
+        renderQuestion();
+    }
+}
+
+function finishQuiz() {
+    document.getElementById('quizScreen').classList.remove('active');
+    document.getElementById('resultScreen').classList.add('active');
+    document.getElementById('liveStats').style.display = 'none';
+
+    const total = activeQuestions.length;
+    let correctCount = 0;
+    activeQuestions.forEach((q, idx) => {
+        if (userAnswers[idx] !== null && q.shuffledOptions[userAnswers[idx]].isCorrect) {
+            correctCount++;
+        }
+    });
+
+    const accuracy = Math.round((correctCount / total) * 100);
+    document.getElementById('resScore').textContent = score;
+    document.getElementById('resCorrect').textContent = `${correctCount}/${total}`;
+    document.getElementById('resAccuracy').textContent = `${accuracy}%`;
+    document.getElementById('resStreak').textContent = maxStreak;
+
+    const wrongList = activeQuestions.filter((q, idx) => userAnswers[idx] === null || !q.shuffledOptions[userAnswers[idx]].isCorrect);
+    const retryBtn = document.getElementById('btnRetryWrong');
+    if (wrongList.length > 0 && wrongList.length < total) {
+        retryBtn.style.display = 'inline-block';
+        document.getElementById('wrongCount').textContent = wrongList.length;
+    } else {
+        retryBtn.style.display = 'none';
+    }
+
+    const reviewDiv = document.getElementById('reviewList');
+    reviewDiv.innerHTML = '';
+    const letters = ['A', 'B', 'C', 'D'];
+
+    activeQuestions.forEach((q, idx) => {
+        const chosen = userAnswers[idx];
+        const correctIdx = q.shuffledOptions.findIndex(o => o.isCorrect);
+        const isOk = chosen !== null && chosen === correctIdx;
+
+        const item = document.createElement('div');
+        item.className = `review-item ${isOk ? 'ok' : 'bad'}`;
+
+        const userText = chosen !== null ? `${letters[chosen]}. ${q.shuffledOptions[chosen].text}` : 'Chưa trả lời';
+        const correctText = `${letters[correctIdx]}. ${q.shuffledOptions[correctIdx].text}`;
+
+        item.innerHTML = `
+            <div class="review-q">Câu ${idx + 1}: ${q.question}</div>
+            <div class="review-ans" style="color: ${isOk ? '#047857' : '#b91c1c'};">
+                <strong>Bạn chọn:</strong> ${userText}
+            </div>
+            ${!isOk ? `<div class="review-ans" style="color: #047857;"><strong>Đáp án đúng:</strong> ${correctText}</div>` : ''}
+            <div class="review-exp"><strong>Hướng dẫn giải:</strong> ${q.explanation}</div>
+        `;
+        reviewDiv.appendChild(item);
+    });
+
+    if (window.MathJax && MathJax.typesetPromise) {
+        MathJax.typesetPromise();
+    }
+}
+
+function retryWrongOnly() {
+    const wrongBase = activeQuestions.filter((q, idx) => userAnswers[idx] === null || !q.shuffledOptions[userAnswers[idx]].isCorrect);
+    startQuiz(wrongBase);
+}
+
+function quitToHome() {
+    document.getElementById('quizScreen').classList.remove('active');
+    document.getElementById('resultScreen').classList.remove('active');
+    document.getElementById('liveStats').style.display = 'none';
+    document.getElementById('startScreen').classList.add('active');
+}
+</script>
+</body>
+</html>
